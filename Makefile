@@ -130,6 +130,10 @@ rundir:
 		touch core ; chmod 444 core ;            \
 		ln -s UA/* .
 
+	cd ${RUNDIR} ;                                   \
+		if [ -e ../rungitm.pbs ]; then           \
+			cp ../rungitm.pbs .;             \
+		fi
 
 TESTDIR = run_test
 
