@@ -359,7 +359,7 @@ subroutine output(dir, iBlock, iOutputType)
 
   case ('2DGEL')
 
-     nvars_to_write = 13
+     nvars_to_write = 17
      call output_2dgel(iBlock)
 
   case ('2DMEL')
@@ -621,6 +621,10 @@ contains
        write(iOutputUnit_,"(I7,A1,a)") 11, " ", "Hall FL Conductance"
        write(iOutputUnit_,"(I7,A1,a)") 12, " ", "DivJu FL"
        write(iOutputUnit_,"(I7,A1,a)") 13, " ", "FL Length"
+       write(iOutputUnit_,"(I7,A1,a)") 14, " ", "Ion_Average_Energy"
+       write(iOutputUnit_,"(I7,A1,a)") 15, " ", "Ion_Energy_Flux"
+       write(iOutputUnit_,"(I7,A1,a)") 16, " ", "Ion_Average_Energy_Filtered"
+       write(iOutputUnit_,"(I7,A1,a)") 17, " ", "Ion_Energy_Flux_Filtered"
 
     endif
     
@@ -1643,7 +1647,11 @@ subroutine output_2dgel(iBlock)
              PedersenFieldLine(iLon, iLat), &
              HallFieldLine(iLon, iLat), &
              DivJuFieldLine(iLon, iLat), &
-             LengthFieldLine(iLon, iLat)
+             LengthFieldLine(iLon, iLat), &
+	     IonAverageEnergy(iLon,iLat), &
+             IonEnergyFlux(iLon,iLat), &
+	     IonAverageEnergyFiltered(iLon,iLat), &
+             IonEnergyFluxFiltered(iLon,iLat)   
      enddo
   enddo
 
