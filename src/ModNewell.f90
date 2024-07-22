@@ -156,8 +156,8 @@ contains
           call smooth(NumberFluxWave)
 !          write(*,*) "After Smooth, Wave : ", hps, hpn
 
-          !call smooth(EnergyFluxIons)
-          !call smooth(NumberFluxIons)
+          call smooth(EnergyFluxIons)
+          call smooth(NumberFluxIons)
 
        endif
 
