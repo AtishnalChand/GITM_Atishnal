@@ -298,6 +298,66 @@ contains
                 ElectronNumberFluxWave(iLon, iLat) = &
                      NumberFluxWave(iMlt, iMlat)
              endif
+             
+             ! Turned on Ions
+             ! Ions Energy Flux
+
+             if (UseNewellAveraged .or. EnergyFluxIons(iMlt, iMlat)==0) then
+
+                ! Add North and South together
+                IonEnergyFlux(iLon, iLat) = &
+                     EnergyFluxIons(iMlt, iMlat) + EnergyFluxIons(iMlt, iMlat2)
+
+                ! If there are values in both hemisphere, then divide by 2
+                if ( EnergyFluxIons(iMlt, iMlat) * &
+                     EnergyFluxIons(iMlt, iMlat2) /= 0) &
+                     IonEnergyFlux(iLon, iLat) = &
+                     IonEnergyFlux(iLon, iLat)/2.0
+             else
+                IonEnergyFlux(iLon, iLat) = &
+                     EnergyFluxIons(iMlt, iMlat)
+
+             endif
+
+             ! Initialize IonEnergyFluxFiltered with the value from IonEnergyFlux
+             IonEnergyFluxFiltered(iLon, iLat) = IonEnergyFlux(iLon, iLat)
+
+             ! Apply filtering condition
+             if (IonEnergyFluxFiltered(iLon, iLat) < 0.0001 .or. IonEnergyFluxFiltered(iLon, iLat) > 0.1) then
+                 IonEnergyFluxFiltered(iLon, iLat) = 0.0001
+             endif
+
+             ! Ions Number Flux
+             if (UseNewellAveraged .or. NumberFluxIons(iMlt, iMlat)==0) then
+
+                ! Add North and South together
+                numflux = &
+                     NumberFluxIons(iMlt, iMlat) + NumberFluxIons(iMlt, iMlat2)
+
+                ! If there are values in both hemisphere, then divide by 2
+                if ( NumberFluxIons(iMlt, iMlat) * &
+                     NumberFluxIons(iMlt, iMlat2) /= 0) &
+                     numflux = numflux/2
+
+             else
+                numflux = NumberFluxIons(iMlt, iMlat)
+             endif
+
+             if (numflux /= 0) then
+                IonAverageEnergy(iLon,iLat) = &
+                     IonEnergyFlux(iLon, iLat)/numflux * &
+                     6.242e11 / 1000.0 ! ergs -> keV
+             endif
+
+             ! Initialize IonAverageEnergyFiltered with the value from IonAverageEnergy
+             IonAverageEnergyFiltered(iLon, iLat) = IonAverageEnergy(iLon, iLat)
+
+             ! Apply filtering condition
+             if (IonAverageEnergyFiltered(iLon, iLat) < 1.0) then
+                IonAverageEnergyFiltered(iLon, iLat) = 1.0
+            ! else if (IonAverageEnergyFiltered(iLon, iLat) > 30.0) then
+            !    IonAverageEnergyFiltered(iLon, iLat) = 30.0
+             endif
 
           endif
        enddo
