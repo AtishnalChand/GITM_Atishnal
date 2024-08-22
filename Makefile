@@ -108,7 +108,7 @@ rundir:
 		if [ ! -e "EIE/README" ]; then \
 			ln -s ${EMPIRICALIEDIR}/data EIE;\
 		fi;
-	cd ${RUNDIR}; rm -f ./PostGITM.exe ; ln -s ${UADIR}/src/PostProcess.exe ./PostGITM.exe
+	cd ${RUNDIR}; rm -f ./PostGITM.exe ; ln -s ${UADIR}/src/PostProcessNetCDF.exe ./PostGITM.exe
 	cd ${RUNDIR}/UA; \
 		mkdir restartOUT data DataIn; \
 		ln -s restartOUT restartIN; \
@@ -130,6 +130,10 @@ rundir:
 		touch core ; chmod 444 core ;            \
 		ln -s UA/* .
 
+	cd ${RUNDIR} ;                                   \
+		if [ -e ../rungitm.pbs ]; then           \
+			cp ../rungitm.pbs .;             \
+		fi
 
 TESTDIR = run_test
 
