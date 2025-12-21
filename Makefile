@@ -114,6 +114,7 @@ rundir:
                 ln -s restartOUT restartIN; \
                 ln -s ${UADIR}/srcSAMI/srcInputs ./input; \
 	fi
+	cd ${RUNDIR}; rm -f ./PostGITM.exe ; ln -s ${UADIR}/src/PostProcessNetCDF.exe ./PostGITM.exe
 	cd ${RUNDIR}/UA; \
 			mkdir -p restartOUT data  DataIn; \
 			ln -s restartOUT restartIN; \
