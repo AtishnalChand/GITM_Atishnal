@@ -2,6 +2,7 @@ ABDIR   = ${UADIR}/srcSphereAB
 IODIR   = ${DATAREADINDICESDIR}
 GLDIR   = ${UADIR}/srcGlow
 SAMIDIR = ${UADIR}/srcSAMI
+NCDIR   = ${NETCDF_ROOT}/lib/
 EIEDIR   = ${IEDIR}/lib
 
 include ../Makefile.conf
@@ -143,6 +144,7 @@ SAMIEXE = ${BINDIR}/GITMSAMI.exe
 GITM:	DEPEND
 	@rm -f GITM.exe
 	@make ${EXE}
+	@make POSTNC
 	@echo
 	@echo "${EXE} has been created"
 	@echo
@@ -169,6 +171,11 @@ ${SAMIEXE}:	${OBJECTS_SAMI}
 
 POST:	PostProcess.o
 	${LINK.f90} ${Lflag2} -o PostGITM.exe PostProcess.o
+
+POSTNC:	PostProcessNetCDF.o
+	${LINK.f90} ${Lflag2} \
+	-L${NCDIR} -lnetcdf -lnetcdff \
+	-o PostProcessNetCDF.exe PostProcessNetCDF.o
 
 MY_LIB = libGITM.a
 
