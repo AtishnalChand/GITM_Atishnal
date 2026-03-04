@@ -43,6 +43,7 @@ MODULES = \
 	ModTime.o\
 	ModTimingGITM.o\
 	ModUser.o \
+    ModReactionRatePerturb.o\
 	ModVertical.o\
 	ModHmeModel.o\
 	ModGITMVersion.o
