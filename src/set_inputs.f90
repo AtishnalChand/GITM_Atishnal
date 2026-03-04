@@ -1988,6 +1988,29 @@ subroutine set_inputs
         if (didDeclareHP) call set_error("HPI defined twice. Using only one is supported.")
         didDeclareHP = .true.
 
+      !!! Start Atishnal Chand 2026 - reads logical value and filename of the UseReactionRatePerturbations from UAM.in file
+      case ("#USEREACTIONRATEPERTURB")
+        call read_in_logical(UseReactionRatePerturbations, iError)
+        if (iError /= 0) then
+            write(*,*) 'Incorrect format for #USEREACTIONRATEPERTURB:'
+            write(*,*) 'This is for using perturbed reaction rates.'
+            write(*,*) ''
+            write(*,*) '#USEREACTIONRATEPERTURB'
+            write(*,*) 'UseReactionRatePerturbations           (logical)'
+            IsDone = .true.
+        endif
+
+      case ("#REACTIONRATEFILE")
+        call read_in_string(cReactionRateFile, iError)
+        if (iError /= 0) then
+            write(*,*) 'Incorrect format for #REACTIONRATEFILE:'
+            write(*,*) ''
+            write(*,*) '#REACTIONRATEFILE'
+            write(*,*) 'cReactionRateFile         (string)'
+            IsDone = .true.
+        endif
+      !!! End Atishnal Chand 2026
+      
       case ("#END")
         IsDone = .true.
 
