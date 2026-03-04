@@ -428,6 +428,11 @@ module ModInputs
              PerturbWaveFreq(nMaxPerturbFreq)
   integer :: nPerturbFreq
 
+  !!! Start Atishnal Chand 2026 - declared a logical variable to use perturbed reaction rates
+  logical :: UseReactionRatePerturbations = .false.
+  character (len=iCharLen_) :: cReactionRateFile = "none"
+  !!! End Atishnal Chand 2026
+  
 contains
 
   ! -------------------------------------------------------------
