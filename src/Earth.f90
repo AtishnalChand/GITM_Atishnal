@@ -130,6 +130,8 @@ subroutine calc_planet_sources(iBlock)
   use ModEUV
   use ModGITM
   use ModTime
+  use ModKind, only: Real8_ ! Atishnal 2026
+  use ModReactionRatePerturb, only: get_reaction_rate ! Atishnal
 
   implicit none
 
@@ -141,6 +143,7 @@ subroutine calc_planet_sources(iBlock)
   real :: tmp3(nLons, nLats, nAlts)
   real :: Omega(nLons, nLats, nAlts)
   real :: CO2Cooling(nLons, nLats, nAlts)
+  real(Real8_) :: Ko_NO_file ! Atishnal 2026
 
   LowAtmosRadRate = 0.0
 
@@ -190,12 +193,23 @@ subroutine calc_planet_sources(iBlock)
   endif
 
   if (UseNOCooling) then
-
+    !-----------------------------------------------------------------
+    ! If reaction rate perturbations are enabled, read Ko_NO from CSV
+    !-----------------------------------------------------------------
+    if (UseReactionRatePerturbations) then
+       call get_reaction_rate('Ko_NO', Ko_NO_file)
+       ! If Ko_NO exits in CSV, overwrite default value
+       ! If Ko_NO is not found, get_reaction_rate returns -1e32; keep the default in that case.
+       if (Ko_NO_file > 0.0_Real8_) then
+          Ko_NO = Ko_NO_file
+       end if
+    end if 
+    
     !  [NO] cooling
     ! [Reference: Kockarts,G., G.R.L.,VOL.7, PP.137-140,Feberary 1980 ]
 
-    Omega = 3.6e-17*NDensityS(1:nLons, 1:nLats, 1:nAlts, iO_3P_, iBlock)/ &
-            (3.6e-17*NDensityS(1:nLons, 1:nLats, 1:nAlts, iO_3P_, iBlock) + 13.3)
+    Omega = Ko_NO*NDensityS(1:nLons, 1:nLats, 1:nAlts, iO_3P_, iBlock)/ &
+            (Ko_NO*NDensityS(1:nLons, 1:nLats, 1:nAlts, iO_3P_, iBlock) + 13.3)
 
     ! We need to check this out. I don't like the first / sign....
 
