@@ -1,68 +1,119 @@
-! Declare a module for reaction rate perturbation
+! Declare a module for reaction rate (and other parameter) perturbations.
+!
+! CSV format expected (either comma-separated or whitespace-separated):
+!   <key>, <value>
+! Example:
+!   n2++o=>no++n2d+op70ev=>no++n4s+3p08ev_lt, 1.33e-16
+!   Ko_NO, 3.6e-17
+!
 module ModReactionRatePerturb
-  
-  use ModInputs
-  
+
+  use ModInputs,  only: cReactionRateFile
+  use ModKind,    only: Real8_
+
   implicit none
-  
-  integer, parameter :: nRatesMax = 50
-  integer :: i, ierror
-  
- ! Declare variables to store the respective reaction rates
-  real(kind=8), dimension(nRatesMax) :: PerturbedRates
-  character (len=100), dimension(nRatesMax) :: Reactions
-  
-! Declare a subroutine to read the csv data file
-  contains
-    subroutine read_csvfile()
-       implicit none
 
-       ! Open the data file
-       open(10, file = cReactionRateFile, status = 'old', Iostat = ierror)
-         
-       ! Check if there was an error opening the csv file
-       if (ierror /= 0) Then
-          print*, "Error opening file reaction_rates.csv"
-          stop
-       end if
+  integer, parameter :: nRatesMax = 200
 
-       ! Read in the data from the csv file
-       do i = 1, nRatesMax
-        read(10,*) Reactions(i), PerturbedRates(i)
-        if (ierror /= 0) then
-          print*, "Error reading data from file reaction_rates.csv"
-          stop
-        end if
-       end do  
-       close(10)
-          
-     end subroutine read_csvfile
+  logical :: IsLoaded = .false.
+  integer :: nRates = 0
+
+  real(Real8_), dimension(nRatesMax) :: PerturbedRates
+  character(len=200), dimension(nRatesMax) :: Keys
+
+contains
+
+  subroutine read_csvfile()
+    implicit none
+
+    integer :: iUnit, ios
+    character(len=400) :: line
+    character(len=200) :: key
+    real(Real8_) :: value
+
+    ! Reset
+    nRates = 0
+
+    if (trim(cReactionRateFile) == 'none') then
+       write(*,*) 'ModReactionRatePerturb: cReactionRateFile is "none". Cannot read rates.'
+       IsLoaded = .false.
+       return
+    end if
+
+    iUnit = 10
+    open(iUnit, file=trim(cReactionRateFile), status='old', action='read', iostat=ios)
+    if (ios /= 0) then
+      write(*,*) 'Error opening reaction/parameter CSV file: ', trim(cReactionRateFile)
+      stop
+    end if
+
+    do
+      read(iUnit,'(A)',iostat=ios) line
+      if (ios /= 0) exit
+
+      ! Skip blank lines and comment lines (# or ! in column 1)
+      if (len_trim(line) == 0) cycle
+      if (line(1:1) == '#' .or. line(1:1) == '!') cycle
+
+      ! List-directed internal read handles both comma and whitespace delimiters.
+      key = ''
+      value = 0.0_Real8_
+      read(line,*,iostat=ios) key, value
+      if (ios /= 0) then
+        write(*,*) 'Error parsing line in ', trim(cReactionRateFile)
+        write(*,*) 'Line was: ', trim(line)
+        stop
+      end if
+
+      nRates = nRates + 1
+      if (nRates > nRatesMax) then
+        write(*,*) 'Too many entries in ', trim(cReactionRateFile), ' (increase nRatesMax)'
+        stop
+      end if
+
+      Keys(nRates) = adjustl(key)
+      PerturbedRates(nRates) = value
+    end do
+
+    close(iUnit)
+    IsLoaded = .true.
+
+  end subroutine read_csvfile
 
 
-     subroutine get_reaction_rate(reaction, rate)
-       character (len =*), intent(in) :: reaction
-       character (len =100)  :: tempstring
-       real(kind=8), intent(out) :: rate
-       logical :: IsFound = .false.
+  subroutine get_reaction_rate(reaction, rate)
+    !! Generic getter: works for reaction rates and any scalar parameter stored
+    !! in the same CSV (e.g., Ko_NO).
 
-       call read_csvfile
+    character(len=*), intent(in) :: reaction
+    real(Real8_),     intent(out) :: rate
 
-       ! Compare the input string to the read in strings one-by-one
-       do i=1, nRatesMax
-          ! if they match, then set the rate
-          ! (figure out how to compare strings in fortran!!!):
-          tempstring = Reactions(i)
-          if (trim(reaction) == trim(tempstring)) then
-             rate = PerturbedRates(i)
-             IsFound = .true.
-             exit
-          endif
-       enddo
+    integer :: i
+    logical :: IsFound
 
-       if (.not.IsFound) then
-          rate = -1e32
-          write(*,*) "I could not find reaction rate : ", reaction
-       endif
-       
-     end subroutine get_reaction_rate  
+    if (.not. IsLoaded) call read_csvfile()
+
+    IsFound = .false.
+    do i = 1, nRates
+      if (trim(reaction) == trim(Keys(i))) then
+        rate = PerturbedRates(i)
+        IsFound = .true.
+        exit
+      end if
+    end do
+
+    if (.not. IsFound) then
+      rate = -1.0e32_Real8_
+      write(*,*) 'ModReactionRatePerturb: could not find key: ', trim(reaction)
+    end if
+
+  end subroutine get_reaction_rate
+
+
+  subroutine reload_reaction_rate_file()
+    !! Optional: call this if you change the CSV during a run and want to re-read.
+    IsLoaded = .false.
+    call read_csvfile()
+  end subroutine reload_reaction_rate_file
+
 end module ModReactionRatePerturb
