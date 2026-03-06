@@ -47,6 +47,11 @@ contains
       stop
     end if
 
+    ! Header for checking
+    write(*,*) 'Reading reaction/parameter rates from: ', trim(cReactionRateFile)
+    write(*,*) 'Key                              Value'
+    write(*,*) '--------------------------------------------'
+
     do
       read(iUnit,'(A)',iostat=ios) line
       if (ios /= 0) exit
@@ -55,9 +60,10 @@ contains
       if (len_trim(line) == 0) cycle
       if (line(1:1) == '#' .or. line(1:1) == '!') cycle
 
-      ! List-directed internal read handles both comma and whitespace delimiters.
       key = ''
       value = 0.0_Real8_
+
+      ! List-directed read supports comma or whitespace
       read(line,*,iostat=ios) key, value
       if (ios /= 0) then
         write(*,*) 'Error parsing line in ', trim(cReactionRateFile)
@@ -73,17 +79,22 @@ contains
 
       Keys(nRates) = adjustl(key)
       PerturbedRates(nRates) = value
+
+      ! Print each entry for verification
+      write(*,'(A30,2X,ES12.5)') trim(Keys(nRates)), PerturbedRates(nRates)
+
     end do
 
     close(iUnit)
     IsLoaded = .true.
 
+    write(*,*) '--------------------------------------------'
+    write(*,*) 'Total entries loaded = ', nRates
+
   end subroutine read_csvfile
 
 
   subroutine get_reaction_rate(reaction, rate)
-    !! Generic getter: works for reaction rates and any scalar parameter stored
-    !! in the same CSV (e.g., Ko_NO).
 
     character(len=*), intent(in) :: reaction
     real(Real8_),     intent(out) :: rate
@@ -94,6 +105,7 @@ contains
     if (.not. IsLoaded) call read_csvfile()
 
     IsFound = .false.
+
     do i = 1, nRates
       if (trim(reaction) == trim(Keys(i))) then
         rate = PerturbedRates(i)
@@ -111,7 +123,6 @@ contains
 
 
   subroutine reload_reaction_rate_file()
-    !! Optional: call this if you change the CSV during a run and want to re-read.
     IsLoaded = .false.
     call read_csvfile()
   end subroutine reload_reaction_rate_file
