@@ -81,7 +81,7 @@ contains
       PerturbedRates(nRates) = value
 
       ! Print each entry for verification
-      write(*,'(A30,2X,ES12.5)') trim(Keys(nRates)), PerturbedRates(nRates)
+      write(*,'(A30,2X,ES22.15)') trim(Keys(nRates)), PerturbedRates(nRates)
 
     end do
 
