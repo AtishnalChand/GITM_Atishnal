@@ -431,7 +431,7 @@ module ModInputs
   !!! Start Atishnal Chand 2026 - declared a logical variable to use perturbed reaction rates
   logical :: UseReactionRatePerturbations = .false.
   character (len=iCharLen_) :: cReactionRateFile = "none"
-  real(Real8_) :: Ko_NO = 3.6e-17 ! Ko_NO is used in Earth.f90 in the NO cooling "Omega" factor
+  real(Real8_) :: Ko_NO = 4.2e-17 ! from Hwang et al. (2003) -  Ko_NO is used in Earth.f90 in the NO cooling "Omega" factor 
   !!! End Atishnal Chand 2026
   
 contains
