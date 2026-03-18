@@ -2,7 +2,7 @@
 # Bash script to run all the cases in reaction_rate.csv in GITM
 
 # Count number of columns
-NumCol=$(head -n1 reaction_rates_master.csv |tr '\,' '\n' |wc -l)
+NumCol=$(head -n1 reaction_rates.csv |tr '\,' '\n' |wc -l)
 
 for i in $(seq 1 $[$NumCol-1]);do
 	NumPad=$(printf "%03d" $i)
@@ -11,7 +11,7 @@ for i in $(seq 1 $[$NumCol-1]);do
 	cp rungitm.pbs $RUNDIR2
 #make rundir
 Col=$[$i+1]
-cut -d, -f1,$Col reaction_rates_master.csv > run$NumPad/reaction_rates.csv
+cut -d, -f1,$Col reaction_rates.csv > run$NumPad/reaction_rates.csv
 cd run$NumPad
 qsub rungitm.pbs
 cd ..
