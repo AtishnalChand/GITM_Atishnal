@@ -148,15 +148,15 @@ rundir:
 		fi
 	cd ${RUNDIR} ;                                    \
 		if [ -e ${UADIR}/ae_data.txt ]; then          \
-			cp ${UADIR}/ae_data.txt .         \
+			cp ${UADIR}/ae_data.txt .;         \
 		elif [ -e ${UADIR}/ae_data.dat ]; then         \
-			cp ${UADIR}/ae_data.dat .                  \
+			cp ${UADIR}/ae_data.dat .;                  \
 		fi
 	cd ${RUNDIR} ;                                    \
 		if [ -e ${UADIR}/imf_data.txt ]; then          \
-			cp ${UADIR}/imf_data.txt .         \
+			cp ${UADIR}/imf_data.txt .;         \
 		elif [ -e ${UADIR}/imf_data.dat ]; then         \
-			cp ${UADIR}/imf_data.dat .                  \
+			cp ${UADIR}/imf_data.dat .;                  \
 		fi
 
 TESTDIR = run_test
