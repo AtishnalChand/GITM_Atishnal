@@ -650,10 +650,10 @@ contains
       write(iOutputUnit_, "(I7,A1,a)") 7, " ", "Eddy Conduction (K/s)"
       write(iOutputUnit_, "(I7,A1,a)") 8, " ", "Eddy Adiabatic Conduction (K/s)"
       write(iOutputUnit_, "(I7,A1,a)") 9, " ", "Chemical Heating (K/s)"
-      write(iOutputUnit_, "(I7,A1,a)") 11, " ", "Joule Heating (K/s)"
-      write(iOutputUnit_, "(I7,A1,a)") 12, " ", "NO Cooling (K/s)"
-      write(iOutputUnit_, "(I7,A1,a)") 13, " ", "O Cooling (K/s)"
-      write(iOutputUnit_, "(I7,A1,a)") 14, " ", "Total Abs EUV"
+      write(iOutputUnit_, "(I7,A1,a)") 10, " ", "Joule Heating (K/s)"
+      write(iOutputUnit_, "(I7,A1,a)") 11, " ", "NO Cooling (K/s)"
+      write(iOutputUnit_, "(I7,A1,a)") 12, " ", "O Cooling (K/s)"
+      write(iOutputUnit_, "(I7,A1,a)") 13, " ", "Total Abs EUV"
       if (cType(1:2) == "1D") then
         do iSpecies = 1, nSpeciesTotal
           write(iOutputUnit_, "(I7,A1,a,a)") 11 + iSpecies, " ", &
@@ -665,13 +665,13 @@ contains
 
         enddo
       else
-        write(iOutputUnit_, "(I7,A1,a)") 15, " ", "Cp"
-        write(iOutputUnit_, "(I7,A1,a)") 16, " ", "Rho"
-        write(iOutputUnit_, "(I7,A1,a)") 17, " ", "E-Field Mag"
-        write(iOutputUnit_, "(I7,A1,a)") 18, " ", "Sigma Ped"
+        write(iOutputUnit_, "(I7,A1,a)") 14, " ", "Cp"
+        write(iOutputUnit_, "(I7,A1,a)") 15, " ", "Rho"
+        write(iOutputUnit_, "(I7,A1,a)") 16, " ", "E-Field Mag"
+        write(iOutputUnit_, "(I7,A1,a)") 17, " ", "Sigma Ped"
         write(iOutputUnit_, "(I7,A1,a)") 18, " ", "Ionization Rate O_3P"
-        write(iOutputUnit_, "(I7,A1,a)") 18, " ", "Ionization Rate O2"
-        write(iOutputUnit_, "(I7,A1,a)") 18, " ", "Ionization Rate N2"
+        write(iOutputUnit_, "(I7,A1,a)") 19, " ", "Ionization Rate O2"
+        write(iOutputUnit_, "(I7,A1,a)") 20, " ", "Ionization Rate N2"
       endif
 
     endif
