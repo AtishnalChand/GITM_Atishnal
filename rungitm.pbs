@@ -23,5 +23,5 @@ module purge
 module load python3/3.9.2
 module load netcdf hdf5
 source ~/venvs/pyitm-3.9/bin/activate
-python3 ./post_process.py -nc  > pgitm.log.$PBS_NCPUS.$PBS_JOBID 2>&1 
+python3 ./post_process.py > pgitm.log.$PBS_NCPUS.$PBS_JOBID 2>&1 
 
