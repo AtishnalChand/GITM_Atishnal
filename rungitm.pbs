@@ -1,0 +1,27 @@
+#!/bin/bash
+#PBS -P n23
+#PBS -q normal
+#PBS -N R3_ST_Max_gaussian_Prior
+#PBS -l walltime=24:00:00
+#PBS -l ncpus=144
+#PBS -l mem=100GB
+#PBS -l wd
+#PBS -m abe
+#PBS -M atishnal.chand@unsw.edu.au
+#PBS -j oe
+module remove openmpi
+module load use.own
+module load GITM/210623_Gadi # load ~/privatemodules/GITM/210623_Gadi
+module load openmpi hdf5 intel-compiler
+module load netcdf
+date
+# Run GITM
+mpirun  -np $PBS_NCPUS ./GITM.exe  > gitm.log.$PBS_NCPUS.$PBS_JOBID 2>&1
+date
+# Postprocess
+module purge
+module load python3/3.9.2
+module load netcdf hdf5
+source ~/venvs/pyitm-3.9/bin/activate
+python3 ./post_process.py -nc  > pgitm.log.$PBS_NCPUS.$PBS_JOBID 2>&1 
+
