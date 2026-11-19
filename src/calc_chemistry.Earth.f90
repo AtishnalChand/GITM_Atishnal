@@ -465,9 +465,9 @@ subroutine calc_chemistry(iBlock)
               !!!!!             -> NO+ + N(4S) + 3.08 eV
 
           if (ti <= 1500.0) then
-            rr = 1.33e-16*ti3m044
+            rr = 7.62e-17*ti3m044
           else
-            rr = 6.55e-17*ti15m023
+            rr = 6.75e-17*ti15m023
           endif
 
           Reaction = &
@@ -1901,7 +1901,7 @@ subroutine calc_chemistry(iBlock)
           if (Chapman(iLon, iLat, iAlt, iO2_, iBlock) >= 0.5*ChapmanShadow) then
             rr = 0.0
           else
-            rr = 4.5e-6*(1 + 0.11*(f107NO - 65)/165) &
+            rr = 6.45e-6*(1 + 0.11*(f107NO - 65)/165) &
                  *exp(-1.e-8*(Chapman(iLon, iLat, iAlt, iO2_, iBlock)*1.e-4)**0.38)
           endif
 
@@ -1915,7 +1915,7 @@ subroutine calc_chemistry(iBlock)
           ! N(4S) + O2 -> NO + O + 1.385 eV
           ! -----------
 
-          rr = 1.5e-20*tn*exp(-3270/tn)
+          rr = 8.01e-21*tn*exp(-3270/tn)
 
           Reaction = &
             rr* &
